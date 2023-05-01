@@ -14,6 +14,8 @@ app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False
 
 def validate_inputs(amount: str, starting_currency: str, converting_currency: str, codes: List[str]) -> bool:
     if not amount.isdigit():
+        """This is a function that checks the content of the three inputs
+        and makes sure that all entered values are valid"""
         flash('Amount must be an integer')
         return False
     if starting_currency not in codes:
@@ -26,6 +28,8 @@ def validate_inputs(amount: str, starting_currency: str, converting_currency: st
 
 @app.route('/get-currencies')
 def get_currencies():
+     """This function creates a list of supported country codes to 
+     check our inputs against"""
      url = "https://api.exchangerate.host/symbols"
      response = requests.get(url)
      data = json.loads(response.text)
@@ -35,6 +39,8 @@ def get_currencies():
 
 @app.route('/get_descriptions')
 def get_descriptions():
+     """This function creates descriptive text on the result page to 
+     tell us what currency we've converted into."""
      url = "https://api.exchangerate.host/symbols"
      response = requests.get(url)
      data = json.loads(response.text)
@@ -43,6 +49,8 @@ def get_descriptions():
     
 @app.route('/convert-currencies', methods=["GET"])
 def convert_currencies():
+    """This is our workhorse function. This does the actual sending of data to the 
+    conversion pages and the retrival of the results."""
     starting_currency = request.args.get('starting_currency')
     amount = request.args.get('amount')
     converting_currency = request.args.get('converting_currency')
@@ -61,5 +69,6 @@ def convert_currencies():
     
 @app.route('/')
 def home_page():
+    """This generates our homepage."""
     codes = get_currencies()
     return render_template("index.html", codes=codes)
